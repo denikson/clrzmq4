@@ -6,11 +6,11 @@
 
 	public abstract class ZThread : IDisposable
 	{
-		public CancellationTokenSource Cancellor { get; protected set; }
-
 		protected Thread _thread;
 
 		protected bool _disposed;
+
+	    protected bool _running;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ZThread"/> class.
@@ -31,26 +31,20 @@
 		/// </summary>
 		public bool IsCancellationRequested
 		{
-			get { return Cancellor.IsCancellationRequested; }
+			get { return !_running; }
 		}
 
-		public virtual void Start()
-		{
-			var cancellor = new CancellationTokenSource();
-			Start(cancellor);
-		}
 
 		/// <summary>
 		/// Start the device in the current thread.
 		/// </summary>
 		/// <exception cref="ObjectDisposedException">The <see cref="ZThread"/> has already been disposed.</exception>
-		public virtual void Start(CancellationTokenSource cancellor)
+		public virtual void Start()
 		{
 			EnsureNotDisposed();
 
-			Cancellor = cancellor;
-
 			if (_thread == null) _thread = new Thread(Run);
+		    _running = true;
 			_thread.Start();
 		}
 
@@ -103,8 +97,9 @@
 
             if (_thread != null)
             {
-                Debug.Assert(Cancellor != null);
-                Cancellor.Cancel();
+                _running = false;
+                _thread.Abort();
+                _thread = new Thread(Run);
             }
 		}
 

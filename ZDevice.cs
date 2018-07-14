@@ -233,7 +233,7 @@
 			var error = default(ZError);
 			try
 			{
-				while (!Cancellor.IsCancellationRequested)
+				while (_running)
 				{
 
 					if (!(isValid = sockets.Poll(polls, ZPoll.In, ref lastMessageFrames, out error, PollingInterval)))
@@ -257,7 +257,7 @@
 			catch (ZException)
 			{
 				// Swallow any exceptions thrown while stopping
-				if (!Cancellor.IsCancellationRequested)
+				if (_running)
 				{
 					throw;
 				}

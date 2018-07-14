@@ -185,7 +185,7 @@ namespace ZeroMQ.Monitoring
 
 	            var poller = ZPollItem.CreateReceiver();
 
-	            while (!Cancellor.IsCancellationRequested)
+	            while (_running)
 	            {
 	                ZMessage incoming;
 	                if (!_socket.PollIn(poller, out incoming, out error, PollingInterval))

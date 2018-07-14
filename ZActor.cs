@@ -2,9 +2,9 @@
 
 namespace ZeroMQ
 {
-	public delegate void ZAction0(ZSocket backend, System.Threading.CancellationTokenSource cancellor, object[] args);
+	public delegate void ZAction0(ZSocket backend, object[] args);
 
-	public delegate void ZAction(ZContext context, ZSocket backend, System.Threading.CancellationTokenSource cancellor, object[] args);
+	public delegate void ZAction(ZContext context, ZSocket backend, object[] args);
 
 	public class ZActor : ZThread
 	{
@@ -26,7 +26,8 @@ namespace ZeroMQ
 			: this(context, default(string), action, args)
 		{
 			var rnd0 = new byte[8];
-			using (var rng = new System.Security.Cryptography.RNGCryptoServiceProvider()) rng.GetNonZeroBytes(rnd0);
+		    var rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
+		    rng.GetNonZeroBytes(rnd0);
 			this.Endpoint = string.Format("inproc://{0}", ZContext.Encoding.GetString(rnd0));
 		}
 
@@ -47,7 +48,8 @@ namespace ZeroMQ
 			: this(default(string), action, args)
 		{
 			var rnd0 = new byte[8];
-			using (var rng = new System.Security.Cryptography.RNGCryptoServiceProvider()) rng.GetNonZeroBytes(rnd0);
+		    var rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
+		    rng.GetNonZeroBytes(rnd0);
 			this.Endpoint = string.Format("inproc://{0}", ZContext.Encoding.GetString(rnd0));
 		}
 
@@ -72,11 +74,11 @@ namespace ZeroMQ
 
 				if (Action0 != null)
 				{
-					Action0(Backend, Cancellor, Arguments);
+					Action0(Backend, Arguments);
 				}
 				if (Action != null)
 				{
-					Action(Context, Backend, Cancellor, Arguments);
+					Action(Context, Backend, Arguments);
 				}
 			}
 		}
